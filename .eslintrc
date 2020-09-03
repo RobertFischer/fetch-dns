@@ -1,0 +1,126 @@
+{
+	"parser": "babel-eslint",
+	"parserOptions": {
+		"codeFrame": false,
+		"sourceType": "script"
+	},
+	"plugins": [
+		"lodash",
+		"promise",
+		"node",
+		"import",
+		"prettier"
+	],
+	"extends": [
+		"eslint:recommended",
+		"plugin:import/stage-0",
+		"plugin:import/warnings",
+		"plugin:import/errors",
+		"plugin:import/recommended",
+		"plugin:lodash/recommended",
+		"plugin:promise/recommended",
+		"plugin:node/recommended"
+	],
+	"env": {
+		"node": true
+	},
+	"overrides": [
+		{
+			"files": ["__tests__/**/*.js", "*.test.js", "*.spec.js"],
+			"env": {
+				"jest": true,
+				"jest/globals": true
+			},
+			"plugins": [
+				"jest"
+			],
+			"extends": [
+				"plugin:jest/all"
+			],
+			"rules": {
+				"jest/prefer-strict-equal": "off",
+				"node/no-unpublished-import": "off",
+				"no-magic-numbers": "off",
+				"no-console": "off",
+				"jest/no-commented-out-tests": "warn",
+				"jest/no-hooks": "off",
+				"jest/require-tothrow-message": "off",
+				"no-process-env": "off"
+			}
+		}
+	],
+	"rules": {
+		"no-await-in-loop": "error",
+		"no-console": [ "error", { "allow": [ "debug", "warn", "error" ] } ],
+		"no-template-curly-in-string": "error",
+		"no-eq-null": "error",
+		"no-extra-bind": "error",
+		"no-floating-decimal": "error",
+		"no-invalid-this": "error",
+		"no-iterator": "error",
+		"no-lone-blocks": "error",
+		"no-loop-func": "error",
+		"no-magic-numbers": [ "error", { "ignore": [0,1,-1,2], "enforceConst": true } ],
+		"no-new-func": "error",
+		"no-new": "error",
+		"no-new-wrappers": "error",
+		"no-proto": "error",
+		"no-return-assign": "error",
+		"no-return-await": "error",
+		"no-self-compare": "error",
+		"no-sequences": "error",
+		"no-throw-literal": "error",
+		"no-unmodified-loop-condition": "error",
+		"no-unused-expressions": "error",
+		"no-useless-call": "error",
+		"no-useless-return": "error",
+		"no-void": "error",
+		"vars-on-top": "error",
+		"wrap-iife": "error",
+		"yoda": "error",
+		"strict": [ "error", "global" ],
+		"init-declarations": [ "error", "always" ],
+		"no-shadow": "error",
+		"no-undefined": "error",
+		"no-undef-init": "error",
+		"no-use-before-define": "error",
+		"callback-return": "off",
+		"global-require": "error",
+		"handle-callback-err": "error",
+		"no-buffer-constructor": "error",
+		"no-new-require": "error",
+		"no-process-env": "warn",
+		"no-process-exit": "error",
+		"no-sync": "error",
+		"no-confusing-arrow": "error",
+		"no-duplicate-imports": "warn",
+		"no-var": "error",
+		"no-useless-rename": "error",
+		"prefer-arrow-callback": "warn",
+		"prefer-const": "warn",
+		"prefer-destructuring": "warn",
+		"prefer-numeric-literals": "warn",
+		"prefer-rest-params": "error",
+		"prefer-spread": "error",
+		"prefer-template": "warn",
+		"array-callback-return": "error",
+		"block-scoped-var": "error",
+		"consistent-return": "error",
+		"default-case": "warn",
+		"curly": ["warn", "multi-line"],
+		"eqeqeq": "error",
+		"guard-for-in": "error",
+		"no-alert": "error",
+		"no-caller": "error",
+		"lodash/import-scope": "off",
+		"lodash/prefer-lodash-method": "off",
+		"no-unused-vars": [ "warn", { "args": "none" } ],
+		"node/no-unsupported-features/es-syntax": "off",
+		"no-mixed-spaces-and-tabs": "off",
+		"import/no-extraneous-dependencies": "warn",
+		"import/no-duplicates": "warn",
+		"node/no-extraneous-import": "warn",
+		"node/no-unpublished-import": "off",
+	}
+}
+

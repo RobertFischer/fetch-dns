@@ -1,0 +1,69 @@
+{
+  "name": "fetch-dns",
+  "version": "0.0.0",
+  "description": "A drop-in replacement of Node's 'dns' module using 'fetch' and DNS-over-HTTPS",
+  "main": "./build/src/index.js",
+  "scripts": {
+    "test": "yarn run build && DEBUG='*,-fetch-dns:rrtypes:debug' jest --runInBand --detectOpenHandles --bail=1",
+    "bootstrap": "./script/generateConstants.sh && ./script/generateRrtypes.sh",
+    "build": "yarn clean && cd ./src && tsc -b ./tsconfig.json && cp ../package.json ../build/",
+    "prepublish": "yarn run build",
+    "clean": "rm -rf ./build ./src/*.d.ts ./src/Cache.js ./src/*.map ./src/Constants.js ./src/Record.js ./src/Rrtypes.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RobertFischer/fetch-dns.git"
+  },
+  "keywords": [
+    "fetch",
+    "dns",
+    "react-native",
+    "browser",
+    "node",
+    "node.js",
+    "https",
+    "dns-over-https",
+    "doh"
+  ],
+  "author": "Robert Fischer <smokejumperit+fetch-dns@gmail.com>",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/RobertFischer/fetch-dns/issues"
+  },
+  "homepage": "https://github.com/RobertFischer/fetch-dns#readme",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "cross-fetch": "^3.0.5",
+    "debug": "^4.1.1",
+    "events": "^3.2.0",
+    "lodash": "^4.17.19",
+    "stream": "^0.0.2",
+    "tslib": "^2.0.1",
+    "validator": "^13.1.1"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.32",
+    "@types/debug": "^4.1.5",
+    "@types/events": "^3.0.0",
+    "@types/jest": "^26.0.8",
+    "@types/lodash": "^4.14.158",
+    "@types/node": "^14.0.23",
+    "@types/validator": "^13.1.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.7.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jest": "^23.20.0",
+    "eslint-plugin-lodash": "^7.1.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-promise": "^4.2.1",
+    "jest": "^26.2.2",
+    "jest-extended": "^0.11.5",
+    "prettier": "^2.0.5",
+    "ts-jest": "^26.1.4",
+    "typescript": "^3.9.7"
+  },
+  "engines": {
+    "node": ">= 14"
+  }
+}

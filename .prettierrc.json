@@ -1,0 +1,7 @@
+{
+	"useTabs": true,
+	"trailingComma": "all",
+	"arrowParens": "always",
+	"insertPragma": true,
+	"endOfLine": "lf"
+}
