@@ -256,7 +256,7 @@ promises.Resolver = class PromiseResolver {
 
 	_lookup4(hostname) {
 		return this.resolve4(hostname).then((result) => {
-			log("Retrieved hostname via lookup4", hostname, result);
+			debug("Retrieved hostname via lookup4", hostname, result);
 			if(_.isArray(result)) {
 				return _.head(result);
 			} else {

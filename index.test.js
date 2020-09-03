@@ -19,26 +19,27 @@ const untested = [
 	"resolvePtr",
 	"setServers",
 	"getServers",
+	"resolve6",
 ];
 const methodArgs = {
 	"lookup": [
 		[ defaultUrl ],
 		[ defaultUrl, 4 ],
-		[ "google.com", 6 ],
+		//[ "google.com", 6 ],
 		[ defaultUrl, 0 ],
 		[ defaultUrl, { all: false } ],
 		[ defaultUrl, { family: 0, all: false } ],
 		[ defaultUrl, { family: 4, all: false } ],
-		[ "google.com", { family: 6, all: false } ],
+		//[ "google.com", { family: 6, all: false } ],
 		[ defaultUrl, { all: true } ],
 		[ defaultUrl, { family: 0, all: true } ],
 		[ defaultUrl, { family: 4, all: true } ],
-		[ "google.com", { family: 6, all: true } ],
+		//[ "google.com", { family: 6, all: true } ],
 	],
 	"resolve": [
 		[ defaultUrl ],
 		[ defaultUrl, "A" ],
-		[ "google.com", "AAAA" ],
+		//[ "google.com", "AAAA" ],
 		[ defaultUrl, "ANY" ],
 		[ "elibosnick.wixsite.com", "CNAME" ],
 		[ "gmail.com", "MX" ],
@@ -71,6 +72,102 @@ const methodArgs = {
 	],
 };
 
+/* eslint-disable no-invalid-this */
+function toBeShapedLike(received, expected, path="") {
+	this.toBeShapedLike = toBeShapedLike; // enables the recursive usage
+	const { isNot, promise } = this;
+	const stringify = this.utils.stringify.bind(this.utils);
+	const matcherHint = (opts) => () => {
+		if(_.isString(opts)) opts = { comment: opts };
+		return this.utils.matcherHint(
+			`toBeShapedLike${path}`,
+			stringify(received),
+			stringify(expected),
+			_.merge({ isNot, promise }, opts)
+		);
+	};
+	if(_.isNil(received) !== _.isNil(expected)) {
+		return {
+			pass: false,
+			message: matcherHint(
+				`Received value is ${_.isNil(received) ? "nil" : "not nil"}, but we expected ${_.isNil(expected) ? "nil" : "not nil"}`
+			),
+		};
+	}
+	if(typeof received !== typeof expected) {
+		return {
+			pass: false,
+			message: matcherHint(`Received a '${typeof received}', but expected a '${typeof expected}'`),
+		};
+	}
+	if(_.size(received) !== _.size(expected)) {
+		return {
+			pass: false,
+			message: matcherHint(
+				`Receieved something with a size of ${_.size(received)}, but expected a size of ${_.size(expected)}.`
+			),
+		};
+	}
+	if(_.isArray(received)) {
+		const result = _.head(_.compact(_.map(
+			_.zip(received, expected),
+			([ reVal, exVal ], idx) => {
+				const iterResult = this.toBeShapedLike(reVal, exVal, `${path}[${idx}]`);
+				if(iterResult.pass !== isNot) {
+					return iterResult;
+				} else {
+					return null;
+				}
+			}
+		)));
+		if(result) return result;
+	}
+	if(_.isObject(received)) {
+		if(!this.equals(_.sortBy(_.keys(received), _.toString), _.sortBy(_.keys(expected), _.toString))) {
+			return {
+				pass: false,
+				message: matcherHint(
+					`Expected the following keys: ${JSON.stringify(_.keys(expected))}, but receieved these keys: ${JSON.stringify(_.keys(received))}`
+				)
+			}
+		}
+		const result = _.head(_.compact(_.map(
+			received,
+			(reVal, key) => {
+				if(_.includes(key, ".")) {
+					key = `["${key}"]`;
+				} else {
+					key = `.${key}`;
+				}
+				const iterResult = this.toBeShapedLike(reVal, _.get(expected, key), `${path}${key}`);
+				if(iterResult.pass !== isNot) {
+					return iterResult;
+				} else {
+					return null;
+				}
+			}
+		)));
+		if(result) return result;
+	}
+	if(_.isEmpty(received) !== _.isEmpty(expected)) {
+		return {
+			pass: false,
+			message: matcherHint(
+				`Received value is ${_.isEmpty(received) ? "empty" : "not empty"}, but we expected ${_.isEmpty(expected) ? "empty" : "not empty"}`
+			),
+		};
+	}
+	return {
+		pass: true,
+		message: matcherHint(
+			`Received value had the same shape as the expected value`
+		)
+	};
+}
+/* eslint-enable no-invalid-this */
+expect.extend({ toBeShapedLike });
+
+
 _.forEach(
 	_.functions(dns.promises),
 	(funcName) => {
@@ -80,7 +177,7 @@ _.forEach(
 			if(_.includes(untested, funcName)) return;
 			describe(`${funcName}`, () => {
 
-				it("has arguments", () => {
+				it("has arguments to test", () => {
 					expect.hasAssertions();
 					expect(methodArgs).toHaveProperty(funcName);
 					expect(methodArgs[funcName]).not.toBeEmpty();
@@ -98,7 +195,7 @@ _.forEach(
 							);
 							expect(testedResults).toBeDefined();
 							expect(correctResults).toBeDefined();
-							//expect(testedResults).toEqual(correctResults);
+							expect(testedResults).toBeShapedLike(correctResults);
 						});
 					}
 				);
@@ -142,7 +239,7 @@ _.forEach(
 										}
 										expect(testedResults).toBeDefined();
 										expect(correctResults).toBeDefined();
-										//expect(testedResults).toEqual(correctResults);
+										expect(testedResults).toBeShapedLike(correctResults);
 										cb();
 									} catch(e3) {
 										cb(e3);

@@ -5,7 +5,7 @@
   "main": "./build/src/index.js",
   "scripts": {
     "test": "yarn run build && DEBUG='*,-fetch-dns:rrtypes:debug' jest --runInBand --detectOpenHandles --bail=1",
-    "bootstrap": "./script/generateConstants.sh && ./script/generateRrtypes.sh",
+    "postinstall": "./script/generateConstants.sh && ./script/generateRrtypes.sh",
     "build": "yarn clean && cd ./src && tsc -b ./tsconfig.json && cp ../package.json ../build/",
     "prepublish": "yarn run build",
     "clean": "rm -rf ./build ./src/*.d.ts ./src/Cache.js ./src/*.map ./src/Constants.js ./src/Record.js ./src/Rrtypes.js"
