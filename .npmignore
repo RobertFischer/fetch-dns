@@ -1,0 +1,9 @@
+.*
+node_modules
+*.test.js
+script
+build/script
+*.config.*
+*.sh
+*.tar.gz
+*.tgz

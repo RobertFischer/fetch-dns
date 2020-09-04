@@ -3,6 +3,7 @@
 	"version": "1.0.2",
 	"description": "A drop-in replacement of Node's 'dns' module using 'fetch' and DNS-over-HTTPS",
 	"main": "./build/index.js",
+	"types": "./build",
 	"scripts": {
 		"test": "yarn run build && yarn run eslint && DEBUG='*,-babel,-fetch-dns:debug,-fetch-dns:rrtypes:debug' jest --runInBand --detectOpenHandles",
 		"build": "yarn run clean && ./script/generateConstants.sh && ./script/generateRrtypes.sh && tsc -b ./tsconfig.json",

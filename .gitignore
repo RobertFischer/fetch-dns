@@ -7,3 +7,4 @@ RrtypesData.json
 build
 .*.swp
 coverage
+*.tgz
