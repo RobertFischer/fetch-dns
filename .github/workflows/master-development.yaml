@@ -19,10 +19,9 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v1
         with:
-          node-version: 12
-      - run: |
-          yarn install
-          yarn test
+          node-version: 14
+      - run: yarn install
+      - run: yarn test
 
   perform-release:
     runs-on: ubuntu-latest
@@ -34,7 +33,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
       - run: npx semantic-release
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
