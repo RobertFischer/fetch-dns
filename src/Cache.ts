@@ -106,7 +106,7 @@ class RecordCache<T extends Record.recordtype.Any> implements HasIsEmpty {
 	private clean(horizon:number=Number.MIN_SAFE_INTEGER):void {
 		const { _setPit, _records } = this;
 		if(_.isEmpty(_records)) {
-			return;
+			
 		} else if(_setPit <= horizon) {
 			_records.length = 0;
 		} else {

@@ -6,3 +6,4 @@ Rrtypes.json
 *.log
 build
 .*.swp
+coverage

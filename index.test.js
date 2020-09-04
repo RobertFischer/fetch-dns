@@ -1,25 +1,26 @@
 "use strict";
 
 const dns = require("dns");
+const DEFAULT_SERVERS = require("./build/DefaultServers").default;
 const _ = require("lodash");
 const fetchDns = require("./build/index"); // eslint-disable-line node/no-unpublished-require
 const Promise = require("bluebird");
 const debug = require("debug")("index-test");
 
 const defaultUrl = "knowledgefight.com"
-const unimplemented = [
+const unimplementedOrUntested = [
 	"reverse",
-];
-const untested = [
-	"Resolver",
 	"lookupService",
+	"Resolver",
+	"getServers", "setServers", // These two are manually handled
+];
+const needingTestCases = [
 	"resolveNaptr",
 	"resolveSoa",
 	"resolveSrv",
 	"resolvePtr",
-	"setServers",
-	"getServers",
 	"resolve6",
+	"resolveAny",
 ];
 const methodArgs = {
 	"lookup": [
@@ -40,7 +41,7 @@ const methodArgs = {
 		[ defaultUrl ],
 		[ defaultUrl, "A" ],
 		//[ "google.com", "AAAA" ],
-		[ defaultUrl, "ANY" ],
+		//[ defaultUrl, "ANY" ],
 		[ "elibosnick.wixsite.com", "CNAME" ],
 		[ "gmail.com", "MX" ],
 		[ "google.com", "TXT" ],
@@ -167,90 +168,137 @@ function toBeShapedLike(received, expected, path="") {
 /* eslint-enable no-invalid-this */
 expect.extend({ toBeShapedLike });
 
+describe("functions with good test cases", () => {
+	_.forEach(
+		_.functions(dns.promises),
+		(funcName) => {
+			debug("Processing function: ", funcName);
+			describe("promises", () => {
+				if(_.includes(unimplementedOrUntested, funcName)) return;
+				if(_.includes(needingTestCases, funcName)) return;
+				describe(`${funcName}`, () => {
 
-_.forEach(
-	_.functions(dns.promises),
-	(funcName) => {
-		debug("Processing function: ", funcName);
-		describe("promises", () => {
-			if(_.includes(unimplemented, funcName)) return;
-			if(_.includes(untested, funcName)) return;
-			describe(`${funcName}`, () => {
+					it("has arguments to test", () => {
+						expect.hasAssertions();
+						expect(methodArgs).toHaveProperty(funcName);
+						expect(methodArgs[funcName]).not.toBeEmpty();
+						expect(methodArgs[funcName]).toBeArray();
+					});
 
-				it("has arguments to test", () => {
-					expect.hasAssertions();
-					expect(methodArgs).toHaveProperty(funcName);
-					expect(methodArgs[funcName]).not.toBeEmpty();
-					expect(methodArgs[funcName]).toBeArray();
+					_.forEach(
+						_.get(methodArgs, funcName),
+						(args) => {
+							it(`returns the same result for: ${JSON.stringify(args)}`, async () => {
+								expect.hasAssertions();
+								const [ correctResults, testedResults ] = await Promise.join(
+									dns.promises[funcName](...args),
+									fetchDns.promises[funcName](...args),
+								);
+								expect(testedResults).toBeDefined();
+								expect(correctResults).toBeDefined();
+								expect(testedResults).toBeShapedLike(correctResults);
+							});
+						}
+					);
 				});
-
-				_.forEach(
-					_.get(methodArgs, funcName),
-					(args) => {
-						it(`returns the same result for: ${JSON.stringify(args)}`, async () => {
-							expect.hasAssertions();
-							const [ correctResults, testedResults ] = await Promise.join(
-								dns.promises[funcName](...args),
-								fetchDns.promises[funcName](...args),
-							);
-							expect(testedResults).toBeDefined();
-							expect(correctResults).toBeDefined();
-							expect(testedResults).toBeShapedLike(correctResults);
-						});
-					}
-				);
 			});
-		});
-	}
-);
+		}
+	);
 
-/* eslint-disable jest/no-test-callback */
-_.forEach(
-	_.functions(dns),
-	(funcName) => {
-		describe("callbacks", () => {
-			if(_.includes(unimplemented, funcName)) return;
-			if(_.includes(untested, funcName)) return;
-			describe(`${funcName}`, () => {
-				it("has arguments", () => {
-					expect.hasAssertions();
-					expect(methodArgs).toHaveProperty(funcName);
-					expect(methodArgs[funcName]).not.toBeEmpty();
-					expect(methodArgs[funcName]).toBeArray();
-				});
+	/* eslint-disable jest/no-test-callback */
+	_.forEach(
+		_.functions(dns),
+		(funcName) => {
+			describe("callbacks", () => {
+				if(_.includes(unimplementedOrUntested, funcName)) return;
+				if(_.includes(needingTestCases, funcName)) return;
+				describe(`${funcName}`, () => {
+					it("has arguments", () => {
+						expect.hasAssertions();
+						expect(methodArgs).toHaveProperty(funcName);
+						expect(methodArgs[funcName]).not.toBeEmpty();
+						expect(methodArgs[funcName]).toBeArray();
+					});
 
-				_.forEach(
-					_.get(methodArgs, funcName),
-					(args) => {
-						it(`returns the same result for: ${JSON.stringify(args)}`, (cb) => {
-							expect.hasAssertions();
-							dns[funcName](...args, (e1, ...correctResults) => {
-								if(!_.isNil(e1)) {
-									cb(e1);
-									return;
-								}
-								const func = fetchDns[funcName];
-								expect(func).toBeFunction();
-								func(...args, (e2, ...testedResults) => {
-									try {
-										if(!_.isNil(e2)) {
-											cb(e2);
-											return;
-										}
-										expect(testedResults).toBeDefined();
-										expect(correctResults).toBeDefined();
-										expect(testedResults).toBeShapedLike(correctResults);
-										cb();
-									} catch(e3) {
-										cb(e3);
+					_.forEach(
+						_.get(methodArgs, funcName),
+						(args) => {
+							it(`returns the same result for: ${JSON.stringify(args)}`, (cb) => {
+								expect.hasAssertions();
+								dns[funcName](...args, (e1, ...correctResults) => {
+									if(!_.isNil(e1)) {
+										cb(e1);
+										return;
 									}
+									const func = fetchDns[funcName];
+									expect(func).toBeFunction();
+									func(...args, (e2, ...testedResults) => {
+										try {
+											if(!_.isNil(e2)) {
+												cb(e2);
+												return;
+											}
+											expect(testedResults).toBeDefined();
+											expect(correctResults).toBeDefined();
+											expect(testedResults).toBeShapedLike(correctResults);
+											cb();
+										} catch(e3) {
+											cb(e3);
+										}
+									});
 								});
 							});
-						});
-					}
-				);
+						}
+					);
+				});
 			});
-		});
-	}
-);
+		}
+	);
 
+});
+
+describe("functions needing test cases", () => {
+	_.forEach(
+		needingTestCases,
+		(funcName) => {
+			if(_.includes(unimplementedOrUntested, funcName)) return;
+			describe(`promises.${funcName}`, () => {
+				it("executes successfully", async () => {
+					expect.hasAssertions();
+					expect(await fetchDns.promises[funcName](defaultUrl)).not.toBeNil();
+				});
+			});
+			describe(`${funcName}`, () => {
+				it("executes successfully", (cb) => {
+					expect.hasAssertions();
+					fetchDns[funcName](defaultUrl, (err, ...args) => {
+						expect(err).toBeNil();
+						expect(args).not.toBeEmpty();
+						expect(_.compact(args)).not.toBeEmpty();
+						cb(err);
+					});
+				});
+			});
+		}
+	);
+});
+
+describe("get and set servers", () => {
+
+	it("is not empty intially", () => {
+		expect.hasAssertions();
+		expect(fetchDns.getServers()).toBeArray();
+		expect(fetchDns.getServers()).not.toBeEmpty();
+		expect(fetchDns.getServers()).toIncludeSameMembers(DEFAULT_SERVERS);
+	});
+
+	it("returns the servers just assigned", () => {
+		expect.hasAssertions();
+		const servers = [ _.sample(DEFAULT_SERVERS) ];
+		fetchDns.setServers(servers);
+		expect(fetchDns.getServers()).toBeArray();
+		expect(fetchDns.getServers()).not.toBeEmpty();
+		expect(fetchDns.getServers()).toIncludeSameMembers(servers);
+	});
+
+});

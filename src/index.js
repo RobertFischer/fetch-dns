@@ -2,6 +2,7 @@
 
 const _ = require("lodash");
 const CACHE = require("./Cache").default;
+const DEFAULT_SERVERS = require("./DefaultServers").default;
 const fetch = require("cross-fetch");
 const Promise = require("bluebird");
 const makeDebug = require("debug");
@@ -133,7 +134,6 @@ function lookupCallback(promise, callback) {
 }
 /* eslint-enable promise/no-callback-in-promise */
 
-const DEFAULT_SERVERS = [ 'https://dns.google.com/resolve', 'https://cloudflare-dns.com/dns-query' ];
 
 module.exports.getDefaultServers = () => { return _.cloneDeep(DEFAULT_SERVERS); };
 
@@ -205,17 +205,20 @@ promises.Resolver = class PromiseResolver {
 
 	getServers() {
 		const servers = this._servers;
+		debug("Retrieving servers", servers);
 		if(!servers || _.isEmpty(servers)) {
 			throw new Error("No servers found");
 		} else {
-			return _.cloneDeep(this._servers);
+			return _.cloneDeep(servers);
 		}
 	}
 
 	setServers(servers) {
-		this._servers = _.cloneDeep(
-			_.isEmpty(servers) ?  DEFAULT_SERVERS : servers
-		);
+		if(_.isEmpty(servers)) {
+			throw new Error("Refusing to set empty servers for DNS");
+		}
+		log("Setting servers", servers);
+		this._servers = _.cloneDeep(servers);
 	}
 
 	_pickServer() {

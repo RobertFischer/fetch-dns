@@ -47,6 +47,16 @@
 				"jest/require-tothrow-message": "off",
 				"no-process-env": "off"
 			}
+		},
+		{
+			"files": ["*.ts"],
+			"parser": "@typescript-eslint/parser",
+			"plugins": [
+				"@typescript-eslint"
+			],
+			"extends": [
+				"plugin:@typescript-eslint/recommended"
+			]
 		}
 	],
 	"rules": {
@@ -121,6 +131,9 @@
 		"import/no-duplicates": "warn",
 		"node/no-extraneous-import": "warn",
 		"node/no-unpublished-import": "off",
+		"node/no-missing-require": "off",
+		"import/no-unresolved": "off",
+		"promise/valid-params": "off",
 	}
 }
 

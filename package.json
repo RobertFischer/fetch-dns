@@ -4,11 +4,12 @@
   "description": "A drop-in replacement of Node's 'dns' module using 'fetch' and DNS-over-HTTPS",
   "main": "./build/src/index.js",
   "scripts": {
-    "test": "yarn run build && DEBUG='*,-fetch-dns:rrtypes:debug' jest --runInBand --detectOpenHandles --bail=1",
+    "test": "yarn run build && DEBUG='*,-fetch-dns:debug,-fetch-dns:rrtypes:debug' jest --runInBand --detectOpenHandles --bail=1",
     "postinstall": "./script/generateConstants.sh && ./script/generateRrtypes.sh",
     "build": "yarn clean && cd ./src && tsc -b ./tsconfig.json && cp ../package.json ../build/",
     "prepublish": "yarn run build",
-    "clean": "rm -rf ./build ./src/*.d.ts ./src/Cache.js ./src/*.map ./src/Constants.js ./src/Record.js ./src/Rrtypes.js"
+    "clean": "rm -rf ./build ./src/*.d.ts ./src/Cache.js ./src/*.map ./src/Constants.js ./src/Record.js ./src/Rrtypes.js",
+    "eslint": "eslint --ext .js,.ts --fix ./src"
   },
   "repository": {
     "type": "git",
@@ -49,8 +50,10 @@
     "@types/lodash": "^4.14.158",
     "@types/node": "^14.0.23",
     "@types/validator": "^13.1.0",
+    "@typescript-eslint/eslint-plugin": "^4.0.1",
+    "@typescript-eslint/parser": "^4.0.1",
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.7.0",
+    "eslint": "^7.8.1",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jest": "^23.20.0",
     "eslint-plugin-lodash": "^7.1.0",
@@ -61,7 +64,7 @@
     "jest-extended": "^0.11.5",
     "prettier": "^2.0.5",
     "ts-jest": "^26.1.4",
-    "typescript": "^3.9.7"
+    "typescript": "^4.0.2"
   },
   "engines": {
     "node": ">= 14"
