@@ -98,31 +98,25 @@ function toBeShapedLike(received, expected, path = "") {
 			),
 		};
 	}
-	if (_.size(received) !== _.size(expected)) {
-		return {
-			pass: false,
-			message: matcherHint(
-				`Receieved something with a size of ${_.size(
-					received,
-				)}, but expected a size of ${_.size(expected)}.`,
-			),
-		};
-	}
 	if (_.isArray(received)) {
+		const sizeToTest = Math.min(_.size(received), _.size(expected));
 		const result = _.head(
 			_.compact(
-				_.map(_.zip(received, expected), ([reVal, exVal], idx) => {
-					const iterResult = this.toBeShapedLike(
-						reVal,
-						exVal,
-						`${path}[${idx}]`,
-					);
-					if (iterResult.pass !== isNot) {
-						return iterResult;
-					} else {
-						return null;
+				_.map(
+					_.take(_.zip(received, expected), sizeToTest),
+					([reVal, exVal], idx) => {
+						const iterResult = this.toBeShapedLike(
+							reVal,
+							exVal,
+							`${path}[${idx}]`,
+						);
+						if (iterResult.pass !== isNot) {
+							return iterResult;
+						} else {
+							return null;
+						}
 					}
-				}),
+				),
 			),
 		);
 		if (result) return result;
