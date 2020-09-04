@@ -8,5 +8,5 @@ ROOTDIR="$(pwd)"
 
 cd "$TMPDIR"
 wget 'https://www.iana.org/assignments/dns-parameters/dns-parameters-4.csv' -O dns-rrtypes.csv
-npx csvtojson dns-rrtypes.csv | tee "$ROOTDIR/src/Rrtypes.json" | jq .
+npx csvtojson dns-rrtypes.csv | tee "$ROOTDIR/src/Rrtypes.json"
 

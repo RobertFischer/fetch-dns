@@ -1,0 +1,16 @@
+name: Automatically Assign PRs to creator
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - unassigned
+
+jobs:
+  automation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign PR to creator
+        uses: thomaseizinger/assign-pr-creator-action@v1.0.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}

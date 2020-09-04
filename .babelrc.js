@@ -41,9 +41,16 @@ if(!isDev) {
 		"babel-plugin-lodash", // This is specially-tuned to support modularizing Lodash imports.
 		[
 			// This is a more general-purpose way to modularize imports.
+			// It's super useful for enabling tree shaking, assuming the imported library has a sane organization.
 			"babel-plugin-transform-imports",
 			{},
 		],
+		"babel-plugin-remove-debug",
+		"babel-plugin-transform-remove-debugger",
+		"babel-plugin-transform-remove-console",
+		"babel-plugin-minify-constant-folding",
+		"babel-plugin-minify-simplify",
+		"babel-plugin-minify-dead-code-elimination",
 	);
 
 }

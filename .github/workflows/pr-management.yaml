@@ -1,0 +1,95 @@
+---
+
+name: Pull Request Management
+
+on:
+  pull_request:
+    - opened
+    - reopened
+    - ready_for_review
+    - edited
+    - synchronize
+
+jobs:
+
+  auto-merge:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]' || github.actor == 'dependabot-preview[bot]'
+    steps:
+      - uses: hmarr/auto-approve-action@v2.0.0
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: ahmadnassri/action-dependabot-auto-merge@v1
+        with:
+          github-token: ${{ github.token }}
+          target: minor
+
+  tag-dirty-prs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checks to see if PRs are dirty
+        uses: eps1lon/actions-label-merge-conflict@releases/2.x
+        with:
+          dirtyLabel: "Cannot Be Merged"
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          commentOnDirty: "Please resolve the conflicts with the target branch."
+          commentOnClean: "Conflicts have been resolved."
+
+  size-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign size label
+        uses: pascalgn/size-label-action@v0.2.3
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+  stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run pull request stats
+        uses: flowwer-dev/pull-request-stats@v1
+        with:
+          period: 180
+
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          git fetch --prune --unshallow --tags
+
+  preview:
+    runs-on: ubuntu-latest
+    needs:
+      - checkout
+    steps:
+      - uses: snyk/release-notes-preview@v1.6.1
+        with:
+          releaseBranch: development
+        env:
+          GITHUB_PR_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  lint-title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aslafy-z/conventional-pr-title-action@master
+        with:
+          success-state: Title follows the Conentional Commits specification.
+          failure-state: Update the PR title to match Conventional Commits
+          context-name: conventional-pr-title
+          preset: conventional-changelog-conventionalcommits@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  format:
+    runs-on: ubuntu-latest
+    name: Apply code formatting
+    needs:
+      - checkout
+    steps:
+      - run: npx prettier --write ./*.json ./*.js ./*.md ./src
+      - run: npx eslint --fix --ext .js,.ts ./src
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Apply ESlint fixes and Prettier formatting
