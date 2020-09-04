@@ -10,7 +10,6 @@ on:
 
 jobs:
 
-
   tests-run:
     runs-on: ubuntu-latest
     name: Verify tests are all still passing
