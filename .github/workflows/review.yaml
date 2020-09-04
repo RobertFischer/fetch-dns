@@ -1,13 +1,14 @@
 # @format
 ---
-name: Implement Code Review
+name: Code Review
 
 on:
   pull_request:
-    - opened
-    - reopened
-    - ready_for_review
-    - synchronize
+    types:
+      - opened
+      - reopened
+      - ready_for_review
+      - synchronize
   push:
     branches:
       - "**"
@@ -15,20 +16,15 @@ on:
       - "!**"
 
 jobs:
-  checkout:
-    runs-on: "ubuntu-latest"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
 
   check-for-secrets:
     runs-on: "ubuntu-latest"
     name: Check for Secrets in the Code
-    needs:
-      - checkout
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Run Yelp's detect-secrets
-        uses: RobertFischer/detect-secrets-action@2.0.0
+        uses: RobertFischer/detect-secrets-action@v2.0.0
       - name: Commit back .secrets.baseline (if it was missing)
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
@@ -37,12 +33,12 @@ jobs:
   tests-run:
     runs-on: ubuntu-latest
     name: Verify tests are all still passing
-    needs:
-      - checkout
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Set up Node
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
       - run: yarn install
       - run: yarn test

@@ -1,15 +1,14 @@
 {
 	"name": "fetch-dns",
-	"version": "0.0.0",
+	"version": "1.0.0-rc.1",
 	"description": "A drop-in replacement of Node's 'dns' module using 'fetch' and DNS-over-HTTPS",
-	"main": "./build/src/index.js",
+	"main": "./build/index.js",
 	"scripts": {
-		"test": "yarn run build && DEBUG='*,-fetch-dns:debug,-fetch-dns:rrtypes:debug' jest --runInBand --detectOpenHandles --bail=1",
-		"postinstall": "./script/generateConstants.sh > /dev/null && ./script/generateRrtypes.sh > /dev/null",
-		"build": "yarn clean && cd ./src && tsc -b ./tsconfig.json && cp ../package.json ../build/",
+		"test": "yarn run build && yarn run eslint && DEBUG='*,-babel,-fetch-dns:debug,-fetch-dns:rrtypes:debug' jest --runInBand --detectOpenHandles",
+		"build": "yarn run clean && ./script/generateConstants.sh && ./script/generateRrtypes.sh && tsc -b ./tsconfig.json",
 		"prepublish": "yarn run build",
-		"clean": "rm -rf ./build ./src/*.d.ts ./src/Cache.js ./src/*.map ./src/Constants.js ./src/Record.js ./src/Rrtypes.js",
-		"eslint": "eslint --ext .js,.ts --fix ./src"
+		"clean": "rm -rf ./build ./src",
+		"eslint": "yarn run clean && eslint --ext .js,.ts --fix ."
 	},
 	"repository": {
 		"type": "git",
@@ -43,7 +42,12 @@
 		"validator": "^13.1.1"
 	},
 	"devDependencies": {
-		"@k4connect/semantic-release-config-library": "^1.0.0",
+		"@semantic-release/changelog": "^5.0.1",
+		"@semantic-release/commit-analyzer": "^8.0.1",
+		"@semantic-release/git": "^9.0.0",
+		"@semantic-release/github": "^7.0.7",
+		"@semantic-release/npm": "^7.0.5",
+		"@semantic-release/release-notes-generator": "^9.0.1",
 		"@types/bluebird": "^3.5.32",
 		"@types/debug": "^4.1.5",
 		"@types/events": "^3.0.0",
@@ -54,6 +58,7 @@
 		"@typescript-eslint/eslint-plugin": "^4.0.1",
 		"@typescript-eslint/parser": "^4.0.1",
 		"babel-eslint": "^10.1.0",
+		"conventional-changelog-conventionalcommits": "^4.4.0",
 		"eslint": "^7.8.1",
 		"eslint-plugin-import": "^2.22.0",
 		"eslint-plugin-jest": "^23.20.0",
@@ -64,16 +69,12 @@
 		"jest": "^26.2.2",
 		"jest-extended": "^0.11.5",
 		"prettier": "^2.1.1",
+		"semantic-release": "^17.1.1",
 		"ts-jest": "^26.1.4",
 		"typescript": "^4.0.2"
 	},
 	"engines": {
 		"node": ">= 14"
-	},
-	"release": {
-		"extends": [
-			"@k4connect/semantic-release-config-library"
-		]
 	},
 	"browserslist": [
 		"cover 99% and > 0.1%",

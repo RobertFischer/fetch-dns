@@ -3,9 +3,9 @@
 "use strict";
 
 const dns = require("dns");
-const DEFAULT_SERVERS = require("./build/DefaultServers").default;
+const DEFAULT_SERVERS = require("./DefaultServers").default;
 const _ = require("lodash");
-const fetchDns = require("./build/index"); // eslint-disable-line node/no-unpublished-require
+const fetchDns = require("./index");
 const Promise = require("bluebird");
 const debug = require("debug")("index-test");
 
@@ -98,31 +98,25 @@ function toBeShapedLike(received, expected, path = "") {
 			),
 		};
 	}
-	if (_.size(received) !== _.size(expected)) {
-		return {
-			pass: false,
-			message: matcherHint(
-				`Receieved something with a size of ${_.size(
-					received,
-				)}, but expected a size of ${_.size(expected)}.`,
-			),
-		};
-	}
 	if (_.isArray(received)) {
+		const sizeToTest = Math.min(_.size(received), _.size(expected));
 		const result = _.head(
 			_.compact(
-				_.map(_.zip(received, expected), ([reVal, exVal], idx) => {
-					const iterResult = this.toBeShapedLike(
-						reVal,
-						exVal,
-						`${path}[${idx}]`,
-					);
-					if (iterResult.pass !== isNot) {
-						return iterResult;
-					} else {
-						return null;
+				_.map(
+					_.take(_.zip(received, expected), sizeToTest),
+					([reVal, exVal], idx) => {
+						const iterResult = this.toBeShapedLike(
+							reVal,
+							exVal,
+							`${path}[${idx}]`,
+						);
+						if (iterResult.pass !== isNot) {
+							return iterResult;
+						} else {
+							return null;
+						}
 					}
-				}),
+				),
 			),
 		);
 		if (result) return result;

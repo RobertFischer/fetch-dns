@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"outDir": "../build",
+		"outDir": "./build",
 		"rootDir": ".",
 
 		"target": "ES2019",

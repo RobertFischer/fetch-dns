@@ -11,7 +11,14 @@ module.exports = {
 	resetMocks: true,
 	clearMocks: true,
 	collectCoverage: true,
-	coverageDirectory: "./coverage",
+	collectCoverageFrom: [
+		"*.ts",
+		"*.js",
+		"!**/node_modules/**",
+		"!**/build/**",
+		"!**/*.config.*",
+		"!**/.*",
+	],
 	coverageReporters: ["text", "text-summary"],
 	coverageThreshold: {
 		global: {
@@ -20,8 +27,8 @@ module.exports = {
 			lines: 70,
 			statements: 70,
 		},
-		"./build/Rrtypes.js": {
-			branches: 40,
+		"Rrtypes.ts": {
+			branches: 35,
 			functions: 30,
 			lines: 60,
 			statements: 50,
