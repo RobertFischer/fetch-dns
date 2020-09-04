@@ -16,34 +16,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-  sync-branches:
-    runs-on: ubuntu-latest
-    name: Syncing branches
-    needs:
-      - checkout
-    steps:
-      - name: Set up Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - name: Creating PR from master to development
-        id: master-to-development
-        uses: tretuna/sync-branches@1.2.0
-        with:
-          PULL_REQUEST_TITLE: "Master is ahead of development!!!!!11one!1!!1!!!"
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          FROM_BRANCH: master
-          TO_BRANCH: development
-      - name: Creating PR from development to master
-        id: development-to-master
-        uses: tretuna/sync-branches@1.2.0
-        with:
-          PULL_REQUEST_TITLE: "Release PR"
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          FROM_BRANCH: development
-          TO_BRANCH: master
-          PULL_REQUEST_IS_DRAFT: true
-
   tests-run:
     runs-on: ubuntu-latest
     name: Verify tests are all still passing
