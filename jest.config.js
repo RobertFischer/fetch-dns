@@ -14,14 +14,14 @@ module.exports = {
 	coverageThreshold: {
 		global: {
 			"branches": 50,
-			"functions": 50,
-			"lines": 50,
-			"statements": 50,
+			"functions": 70,
+			"lines": 70,
+			"statements": 70,
 		},
 		"./build/Rrtypes.js": {
 			"branches": 40,
 			"functions": 30,
-			"lines": 50,
+			"lines": 60,
 			"statements": 50,
 		}
 	},
