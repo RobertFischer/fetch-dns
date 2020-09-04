@@ -5,7 +5,7 @@
 	"main": "./build/index.js",
 	"scripts": {
 		"test": "yarn run clean && yarn run eslint && DEBUG='*,-babel,-fetch-dns:debug,-fetch-dns:rrtypes:debug' jest --runInBand --detectOpenHandles",
-		"build": "yarn run clean && tsc -b ./tsconfig.json",
+		"build": "yarn run clean && ./script/generateConstants.sh && ./script/generateRrtypes.sh && tsc -b ./tsconfig.json",
 		"prepublish": "yarn run build",
 		"clean": "rm -rf ./build ./src",
 		"eslint": "eslint --ext .js,.ts --fix ."
