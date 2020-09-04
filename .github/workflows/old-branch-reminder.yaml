@@ -1,8 +1,10 @@
+# @format
+
 name: Old Branch Reminder
 
 on:
   schedule:
-    - cron: '0 0 * * 1'  # Run on Mondays
+    - cron: "0 0 * * 1" # Run on Mondays
 
 jobs:
   check_branches:
@@ -11,6 +13,6 @@ jobs:
       - name: Checking for Unusued Branches
         uses: arup-group/action-notify-unused-branches@v5
         with:
-          daysOld: 45  # Days before a branch is old
+          daysOld: 45 # Days before a branch is old
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

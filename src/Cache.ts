@@ -5,6 +5,13 @@ import isFQDN from "validator/lib/isFQDN";
 import { EventEmitter } from "events";
 import { Record } from "./Record";
 
+/* eslint-disable no-magic-numbers */
+const CLEAN_PERIOD_MILLIS = 600 * 1000;
+const PERIOD_BETWEEN_CLEANS = 1000; // Number of elements between cleans
+const MAX_LISTENERS_FOR_COUNTER = 4096;
+const MILLIS_PER_SECOND = 1000;
+/* eslint-enable no-magic-numbers */
+
 interface HasIsEmpty {
 	isEmpty(): boolean;
 }
@@ -40,9 +47,6 @@ interface RecordEntry<T extends Record.recordtype.Any> {
 	ttl: number;
 }
 
-const CLEAN_PERIOD_MILLIS = 600 * 1000;
-const MAX_ELEMENTS = 1000;
-
 const counter = new (class Counter extends EventEmitter {
 	private pit = Number.MIN_SAFE_INTEGER;
 	private horizon = Number.MIN_SAFE_INTEGER;
@@ -50,7 +54,7 @@ const counter = new (class Counter extends EventEmitter {
 
 	private shouldFire() {
 		return (
-			this.lastUsedValue() % MAX_ELEMENTS === 0 ||
+			this.lastUsedValue() % PERIOD_BETWEEN_CLEANS === 0 ||
 			this.lastCleaned + CLEAN_PERIOD_MILLIS < Date.now()
 		);
 	}
@@ -63,7 +67,7 @@ const counter = new (class Counter extends EventEmitter {
 		_.defer(
 			this.emit.bind(this),
 			"clean",
-			Math.max(this.lastUsedValue() - MAX_ELEMENTS, this.horizon),
+			Math.max(this.lastUsedValue() - PERIOD_BETWEEN_CLEANS, this.horizon),
 		);
 	}
 
@@ -81,31 +85,38 @@ const counter = new (class Counter extends EventEmitter {
 		return this.pit++;
 	}
 })();
-counter.setMaxListeners(4096);
+counter.setMaxListeners(MAX_LISTENERS_FOR_COUNTER);
 
 function reverseHostname(hostname: string): string[] {
-	if (!isFQDN(hostname))
+	if (!isFQDN(hostname)) {
 		throw new Error(
 			`Hostname to cache is not a fully qualified domain name (FQDN): ${JSON.stringify(
 				hostname,
 			)} (${typeof hostname})`,
 		);
+	}
 	return _.reject(_.reverse(hostname.split(".")), _.isEmpty);
 }
+
+/* eslint-disable no-use-before-define */
+interface Subdomains {
+	[key: string]: ResultCache;
+}
+/* eslint-enable no-use-before-define */
 
 class RecordCache<T extends Record.recordtype.Any> implements HasIsEmpty {
 	private readonly _records: RecordEntry<T>[];
 	private readonly _setAt = Date.now();
 	private readonly _setPit = counter.nextValue();
-	private readonly _listenForClean = _.throttle(
-		() =>
-			_.isEmpty(this._records) || counter.once("clean", this.clean.bind(this)),
-		10 * 1000,
-	);
 
 	constructor(records: RecordEntry<T>[]) {
 		this._records = _.cloneDeep(records);
 		this._listenForClean();
+	}
+
+	_listenForClean(): void {
+		if (_.isEmpty(this._records)) return;
+		counter.once("clean", this.clean.bind(this));
 	}
 
 	get records(): RecordEntry<T>[] {
@@ -114,15 +125,15 @@ class RecordCache<T extends Record.recordtype.Any> implements HasIsEmpty {
 			_.filter(this._records, (record) => {
 				if (_.isEmpty(record) || _.isEmpty(record.record)) return false;
 				const ttlSeconds = record.ttl;
-				return ttlSeconds * 1000 + this._setAt >= now;
+				return ttlSeconds * MILLIS_PER_SECOND + this._setAt >= now;
 			}),
 		);
 	}
 
 	private clean(horizon: number = Number.MIN_SAFE_INTEGER): void {
 		const { _setPit, _records } = this;
-		if (_.isEmpty(_records)) {
-		} else if (_setPit <= horizon) {
+		if (_.isEmpty(_records)) return;
+		if (_setPit <= horizon) {
 			_records.length = 0;
 		} else {
 			this._listenForClean();
@@ -139,20 +150,16 @@ type RecordMapping = {
 	[T in Record.recordtype.Any]: RecordCache<T>;
 };
 
-interface Subdomains {
-	[key: string]: ResultCache;
-}
-
 class ResultCache implements HasIsEmpty {
 	private readonly _mapping = {} as RecordMapping;
 	private readonly _subdomains = {} as Subdomains;
-	private readonly _listenForClean = _.throttle(
-		() => counter.once("clean", this.clean.bind(this)),
-		10 * 1000,
-	);
 
 	constructor() {
 		this._listenForClean();
+	}
+
+	_listenForClean(): void {
+		counter.once("clean", this.clean.bind(this));
 	}
 
 	isEmpty(): boolean {
@@ -204,7 +211,11 @@ class ResultCache implements HasIsEmpty {
 		if (_.isEmpty(_.compact(records))) {
 			_.unset(this._mapping, rrtype);
 		} else {
+			/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+			/* eslint-disable @typescript-eslint/no-explicit-any */
 			(this._mapping as any)[rrtype] = new RecordCache(records);
+			/* eslint-enable @typescript-eslint/no-unsafe-member-access */
+			/* eslint-enable @typescript-eslint/no-explicit-any */
 		}
 	}
 

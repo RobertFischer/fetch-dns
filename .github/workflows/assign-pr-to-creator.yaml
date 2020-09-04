@@ -1,3 +1,5 @@
+# @format
+
 name: Automatically Assign PRs to creator
 
 on:

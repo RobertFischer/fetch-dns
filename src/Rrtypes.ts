@@ -37,15 +37,16 @@ const rrtypeMap = _.fromPairs(
 log(rrtypeMap);
 
 export default function lookupRrtype(rrtype: number): string | false {
+	/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 	const result = _.get(rrtypeMap, _.toString(rrtype), null);
 	debug("Lookup up RRTYPE", { rrtype, result });
-	if (_.isNil(result)) {
-		return false;
-	} else if (!_.isString(result)) {
-		throw new Error(
-			`INTERNAL ERROR: rrtype return was neither nil nor a string, but '${typeof result}' (${result})`,
-		);
-	} else {
+	/* eslint-enable @typescript-eslint/no-unsafe-assignment */
+	if (_.isNil(result) || result === false) return false;
+	if (_.isString(result)) {
 		return result;
+	} else {
+		throw new Error(
+			`INTERNAL ERROR: rrtype return was neither nil nor a string, but '${typeof result}'`,
+		);
 	}
 }

@@ -31,7 +31,7 @@ const plugins = [
 	"babel-plugin-transform-promise-to-bluebird",
 ];
 
-if(!isDev) {
+if (!isDev) {
 	presets.unshift(
 		// Presets are executed from last to first, so these go at the front to go last
 		"minify",
@@ -52,7 +52,6 @@ if(!isDev) {
 		"babel-plugin-minify-simplify",
 		"babel-plugin-minify-dead-code-elimination",
 	);
-
 }
 
 module.exports = {

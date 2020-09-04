@@ -4,13 +4,7 @@
 		"codeFrame": false,
 		"sourceType": "script"
 	},
-	"plugins": [
-		"lodash",
-		"promise",
-		"node",
-		"import",
-		"prettier"
-	],
+	"plugins": ["lodash", "promise", "node", "import", "prettier"],
 	"extends": [
 		"eslint:recommended",
 		"plugin:import/stage-0",
@@ -31,12 +25,8 @@
 				"jest": true,
 				"jest/globals": true
 			},
-			"plugins": [
-				"jest"
-			],
-			"extends": [
-				"plugin:jest/all"
-			],
+			"plugins": ["jest"],
+			"extends": ["plugin:jest/all"],
 			"rules": {
 				"jest/prefer-strict-equal": "off",
 				"node/no-unpublished-import": "off",
@@ -51,18 +41,22 @@
 		{
 			"files": ["*.ts"],
 			"parser": "@typescript-eslint/parser",
-			"plugins": [
-				"@typescript-eslint"
-			],
+			"parserOptions": {
+				"project": "./src/tsconfig.json"
+			},
+			"plugins": ["@typescript-eslint"],
 			"extends": [
 				"plugin:@typescript-eslint/recommended",
 				"plugin:@typescript-eslint/recommended-requiring-type-checking"
-			]
+			],
+			"rules": {
+				"@typescript-eslint/unbound-method": "off"
+			}
 		}
 	],
 	"rules": {
 		"no-await-in-loop": "error",
-		"no-console": [ "error", { "allow": [ "debug", "warn", "error" ] } ],
+		"no-console": ["error", { "allow": ["debug", "warn", "error"] }],
 		"no-template-curly-in-string": "error",
 		"no-eq-null": "error",
 		"no-extra-bind": "error",
@@ -71,7 +65,10 @@
 		"no-iterator": "error",
 		"no-lone-blocks": "error",
 		"no-loop-func": "error",
-		"no-magic-numbers": [ "error", { "ignore": [0,1,-1,2], "enforceConst": true } ],
+		"no-magic-numbers": [
+			"error",
+			{ "ignore": [0, 1, -1, 2], "enforceConst": true }
+		],
 		"no-new-func": "error",
 		"no-new": "error",
 		"no-new-wrappers": "error",
@@ -89,8 +86,8 @@
 		"vars-on-top": "error",
 		"wrap-iife": "error",
 		"yoda": "error",
-		"strict": [ "error", "global" ],
-		"init-declarations": [ "error", "always" ],
+		"strict": ["error", "global"],
+		"init-declarations": ["error", "always"],
 		"no-shadow": "error",
 		"no-undefined": "error",
 		"no-undef-init": "error",
@@ -125,7 +122,7 @@
 		"no-caller": "error",
 		"lodash/import-scope": "off",
 		"lodash/prefer-lodash-method": "off",
-		"no-unused-vars": [ "warn", { "args": "none" } ],
+		"no-unused-vars": ["warn", { "args": "none" }],
 		"node/no-unsupported-features/es-syntax": "off",
 		"no-mixed-spaces-and-tabs": "off",
 		"import/no-extraneous-dependencies": "warn",
@@ -135,6 +132,6 @@
 		"node/no-missing-require": "off",
 		"import/no-unresolved": "off",
 		"promise/valid-params": "off",
+		"node/no-missing-import": "off"
 	}
 }
-

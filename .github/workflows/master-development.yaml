@@ -1,5 +1,5 @@
+# @format
 ---
-
 name: "Management for 'master' and 'development' branches"
 
 on:
@@ -9,7 +9,6 @@ on:
       - development
 
 jobs:
-
   checkout:
     runs-on: ubuntu-latest
     name: Perform Checkout
@@ -72,6 +71,3 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Semantic Released
-
-
-

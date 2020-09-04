@@ -1,5 +1,8 @@
 /** @format */
 
+/* eslint-disable no-shadow */
+/* eslint-disable @typescript-eslint/no-namespace */
+
 import makeDebug from "debug";
 
 const log = makeDebug("fetch-dns:Record");
@@ -10,25 +13,18 @@ if (log.enabled) error.enabled = true;
 
 export type Hostname = string;
 export type Address = string;
-export type Family = 4 | 6 | 0;
+export type Family = 4 | 6 | 0; // eslint-disable-line no-magic-numbers
 export type Service = string;
 
-export interface ResolveAnswer<T extends Record.recordtype.Any> {
-	name: string;
-	rrtype: T;
-	ttl: number;
-	data: string;
-}
-
 export namespace Record {
-	export type Simple = string;
-
-	export type MaybeTtl = Simple | WithTtl;
-
 	export interface WithTtl {
 		address: Address;
 		ttl: number;
 	}
+
+	export type Simple = string;
+
+	export type MaybeTtl = Simple | WithTtl;
 
 	export interface Mx {
 		priority: number;
@@ -112,4 +108,11 @@ export namespace Record {
 		: T extends recordtype.ANY
 		? Any
 		: never;
+}
+
+export interface ResolveAnswer<T extends Record.recordtype.Any> {
+	name: string;
+	rrtype: T;
+	ttl: number;
+	data: string;
 }
