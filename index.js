@@ -12,7 +12,7 @@ const lookupRrtype = require("./Rrtypes.ts").default;
 const {
 	name: packageName,
 	version: packageVersion,
-} = require("../package.json");
+} = require("./package.json");
 
 module.exports = {};
 _.merge(module.exports, require("./Constants"));
