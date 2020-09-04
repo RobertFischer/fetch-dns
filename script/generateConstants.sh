@@ -9,4 +9,4 @@ cd ..
 ROOTDIR="$(pwd)"
 NODE_PATH="$ROOTDIR/node_modules"
 
-node "$SCRIPTDIR/generateConstants.js" | tee "$ROOTDIR/src/Constants.ts"
+node "$SCRIPTDIR/generateConstants.js" | tee "$ROOTDIR/Constants.ts"
