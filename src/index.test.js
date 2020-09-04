@@ -3,9 +3,9 @@
 "use strict";
 
 const dns = require("dns");
-const DEFAULT_SERVERS = require("./build/DefaultServers").default;
+const DEFAULT_SERVERS = require("./DefaultServers").default;
 const _ = require("lodash");
-const fetchDns = require("./build/index"); // eslint-disable-line node/no-unpublished-require
+const fetchDns = require("./index");
 const Promise = require("bluebird");
 const debug = require("debug")("index-test");
 

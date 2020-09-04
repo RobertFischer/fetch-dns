@@ -8,11 +8,11 @@ const DEFAULT_SERVERS = require("./DefaultServers").default;
 const fetch = require("cross-fetch");
 const Promise = require("bluebird");
 const makeDebug = require("debug");
-const lookupRrtype = require("./Rrtypes").default;
+const lookupRrtype = require("./Rrtypes.ts").default;
 const {
 	name: packageName,
 	version: packageVersion,
-} = require("./package.json");
+} = require("../package.json");
 
 module.exports = {};
 _.merge(module.exports, require("./Constants"));
@@ -434,6 +434,10 @@ promises.Resolver = class PromiseResolver {
 
 	resolveAny(hostname) {
 		const results = this._doResolve(hostname, "*", (initialResponse) => {
+			if(!_.isFunction(lookupRrtype)) {
+				error(`lookupRrtype is not a function, but '${typeof lookupRrtype}': ${JSON.stringify(lookupRrtype)}`);
+				return [];
+			}
 			const rrtype = lookupRrtype(initialResponse.type);
 			return Promise.resolve(this.resolve(hostname, rrtype))
 				.catch(NotImplementedError, () => {

@@ -132,6 +132,7 @@
 		"node/no-missing-require": "off",
 		"import/no-unresolved": "off",
 		"promise/valid-params": "off",
-		"node/no-missing-import": "off"
+		"node/no-missing-import": "off",
+		"node/no-unpublished-require": "off"
 	}
 }
