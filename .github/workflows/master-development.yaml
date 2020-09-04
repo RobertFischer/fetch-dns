@@ -25,6 +25,7 @@ jobs:
 
   perform-release:
     runs-on: ubuntu-latest
+    name: Perform the release
     needs:
       - tests-run
     steps:
