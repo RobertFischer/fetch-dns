@@ -24,6 +24,7 @@ jobs:
 
   check-for-secrets:
     runs-on: 'ubuntu-latest'
+    name: Check for Secrets in the Code
     needs:
       - checkout
     steps:
@@ -34,4 +35,15 @@ jobs:
         with:
           commit_message: "build(detect-secrets): Commit the newly-generated .secrets.baseline file"
 
-
+  tests-run:
+    runs-on: ubuntu-latest
+    name: Verify tests are all still passing
+    needs:
+      - checkout
+    steps:
+      - name: Set up Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: yarn install
+      - run: yarn test
