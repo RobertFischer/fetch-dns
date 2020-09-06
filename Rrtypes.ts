@@ -1,6 +1,6 @@
 /** @format */
 
-import data from "./Rrtypes.json";
+import data from "./RrtypesData.json";
 import _ from "lodash";
 import Debug from "debug";
 

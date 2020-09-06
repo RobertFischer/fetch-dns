@@ -2,7 +2,7 @@
 node_modules
 package-lock.json
 Constants.ts
-Rrtypes.json
+RrtypesData.json
 *.log
 build
 .*.swp
