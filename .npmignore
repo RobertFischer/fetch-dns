@@ -7,3 +7,5 @@ build/script
 *.sh
 *.tar.gz
 *.tgz
+**/*.test.*
+tsconfig.json

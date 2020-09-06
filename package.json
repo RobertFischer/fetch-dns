@@ -7,9 +7,8 @@
 	"scripts": {
 		"test": "yarn run build && yarn run eslint && DEBUG='*,-babel,-fetch-dns:debug,-fetch-dns:rrtypes:debug' jest --runInBand --detectOpenHandles",
 		"build": "yarn run clean && ./script/generateConstants.sh && ./script/generateRrtypes.sh && tsc -b ./tsconfig.json",
-		"prepublish": "yarn run build",
-		"postinstall": "yarn run build",
-		"clean": "rm -rf ./build ./src",
+		"prepare": "yarn run build",
+		"clean": "rm -rf ./build ./src *.tar.gz *.tgz",
 		"eslint": "yarn run clean && eslint --ext .js,.ts --fix ."
 	},
 	"repository": {

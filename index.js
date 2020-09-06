@@ -8,7 +8,7 @@ const DEFAULT_SERVERS = require("./DefaultServers").default;
 const fetch = require("cross-fetch");
 const Promise = require("bluebird");
 const makeDebug = require("debug");
-const lookupRrtype = require("./Rrtypes.ts").default;
+const lookupRrtype = require("./Rrtypes").default;
 const {
 	name: packageName,
 	version: packageVersion,
