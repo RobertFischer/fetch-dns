@@ -1,3 +1,10 @@
+## [1.0.0-rc.3](https://github.com/RobertFischer/fetch-dns/compare/v1.0.0-rc.2...v1.0.0-rc.3) (2020-09-06)
+
+
+### Bug Fixes
+
+* **constants:** fix the build process so that we get our hands on constants ([e4a2dd8](https://github.com/RobertFischer/fetch-dns/commit/e4a2dd835dc2733a6df68a4c02ed444b461e4707))
+
 ## [1.0.0-rc.2](https://github.com/RobertFischer/fetch-dns/compare/v1.0.0-rc.1...v1.0.0-rc.2) (2020-09-06)
 
 ### Bug Fixes
