@@ -75,7 +75,7 @@
 		"typescript": "^4.0.2"
 	},
 	"engines": {
-		"node": ">= 10.17.0"
+		"node": ">= 11.14.0"
 	},
 	"browserslist": [
 		"cover 99% and > 0.1%",
