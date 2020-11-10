@@ -1,6 +1,6 @@
 {
 	"name": "fetch-dns",
-	"version": "1.0.3-rc.1",
+	"version": "1.0.0-rc.4",
 	"description": "A drop-in replacement of Node's 'dns' module using 'fetch' and DNS-over-HTTPS",
 	"main": "./build/index.js",
 	"types": "./build",
