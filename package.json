@@ -33,7 +33,7 @@
 	},
 	"homepage": "https://github.com/RobertFischer/fetch-dns#readme",
 	"dependencies": {
-		"bluebird": "^3.7.2",
+		"@ve-mobile/fun-promises": "../fun-promises/",
 		"cross-fetch": "^3.0.5",
 		"debug": "^4.1.1",
 		"events": "^3.2.0",
@@ -49,7 +49,6 @@
 		"@semantic-release/github": "^7.0.7",
 		"@semantic-release/npm": "^7.0.5",
 		"@semantic-release/release-notes-generator": "^9.0.1",
-		"@types/bluebird": "^3.5.32",
 		"@types/debug": "^4.1.5",
 		"@types/events": "^3.0.0",
 		"@types/jest": "^26.0.8",
