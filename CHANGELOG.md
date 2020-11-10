@@ -1,3 +1,10 @@
+## [1.0.0-rc.4](https://github.com/RobertFischer/fetch-dns/compare/v1.0.0-rc.3...v1.0.0-rc.4) (2020-11-10)
+
+
+### Performance Improvements
+
+* **remove bluebird:** remove the Bluebird implementation of promises ([c0ea903](https://github.com/RobertFischer/fetch-dns/commit/c0ea90316e26874bf3ee8d97d7fb2c46933e800f))
+
 ## [1.0.0-rc.3](https://github.com/RobertFischer/fetch-dns/compare/v1.0.0-rc.2...v1.0.0-rc.3) (2020-09-06)
 
 
